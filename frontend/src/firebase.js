@@ -1,8 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database"; // <-- Add this
-
-
+import { getAuth } from "firebase/auth"; // if you need authentication
+import { getStorage } from "firebase/storage";
+// import { getFirestore } from "firebase/firestore"; // if you need database
 
 
 // Your web app's Firebase configuration
@@ -20,4 +21,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Create a database instance
-export const db = getDatabase(app);
+export const db = getDatabase(app);  // Realtime Database
+
+
+// Export Firebase services
+export const auth = getAuth(app);
+export const storage = getStorage(app)
+
+
+// export const db = getFirestore(app); // Cloud Firestore Database
