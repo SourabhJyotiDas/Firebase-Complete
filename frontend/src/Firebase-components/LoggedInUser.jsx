@@ -1,4 +1,5 @@
 import { useAuth } from "../hooks/useAuth";
+import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 
 const LoggedInUser = () => {
@@ -20,7 +21,7 @@ const LoggedInUser = () => {
       {currentUser ? (
         <>
           <h1>Welcome {currentUser.email}</h1>
-          <button onClick={handleLogout}>Let's Logout</button>
+          <button onClick={handleLogout}>Let Logout</button>
         </>
       ) : (
         <h1>Not logged in</h1>
