@@ -3,7 +3,8 @@ import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database"; // <-- Add this
 import { getAuth } from "firebase/auth"; // if you need authentication
 import { getStorage } from "firebase/storage";
-// import { getFirestore } from "firebase/firestore"; // if you need database
+import {  GoogleAuthProvider } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // if you need database
 
 
 // Your web app's Firebase configuration
@@ -27,6 +28,7 @@ export const db = getDatabase(app);  // Realtime Database
 // Export Firebase services
 export const auth = getAuth(app);
 export const storage = getStorage(app)
+export const googleProvider = new GoogleAuthProvider();
 
 
-// export const db = getFirestore(app); // Cloud Firestore Database
+export const firestoreDB = getFirestore(app); // Cloud Firestore Database
