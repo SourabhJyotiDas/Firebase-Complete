@@ -12,6 +12,7 @@ import HomePage from "./HomePage";
 import { useEffect, useState } from "react";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import EditProfile from "./Firebase-components/Edit-Profile";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -26,17 +27,21 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Navbar currentUser={currentUser}/>
+        <Navbar currentUser={currentUser && currentUser}/>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login currentUser={currentUser} />} />
+          <Route path="/login" element={<Login currentUser={currentUser && currentUser} />} />
           <Route
             path="/signup"
-            element={<Signup currentUser={currentUser} />}
+            element={<Signup currentUser={currentUser && currentUser} />}
           />
           <Route
             path="/profile"
-            element={<LoggedInUser currentUser={currentUser} />}
+            element={<LoggedInUser currentUser={currentUser && currentUser} />}
+          />
+          <Route
+            path="/profile/edit-profile"
+            element={<EditProfile currentUser={currentUser && currentUser} />}
           />
         </Routes>
       </BrowserRouter>

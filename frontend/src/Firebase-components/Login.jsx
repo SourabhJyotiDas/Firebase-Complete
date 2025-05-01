@@ -1,8 +1,8 @@
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc"; // Google icon
 import { Link, useNavigate } from "react-router-dom";
-import { auth, googleProvider,firestoreDB } from "../firebase";
+import { auth, googleProvider, firestoreDB } from "../firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 function Login({ currentUser }) {
@@ -12,9 +12,12 @@ function Login({ currentUser }) {
   const navigate = useNavigate();
 
   // If the user is already logged in, redirect to profile page
-  if (currentUser) {
-    navigate("/profile");
-  }
+  // If currentUser is not provided, navigate to the login page
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/profile");
+    }
+  }, [currentUser, navigate]);
 
   const handleLogin = async () => {
     setError(""); // Reset error on every attempt
@@ -38,32 +41,32 @@ function Login({ currentUser }) {
   };
 
   const handleGoogleLogin = async () => {
-      try {
-        const result = await signInWithPopup(auth, googleProvider);
-        const user = result.user;
-    
-        // Reference to the user's document in Firestore
-        const userRef = doc(firestoreDB, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-    
-        // Only create the document if it doesn't exist
-        if (!userSnap.exists()) {
-          await setDoc(userRef, {
-            uid: user.uid,
-            displayName: user.displayName || "",
-            email: user.email,
-            photoURL: user.photoURL || "",
-            createdAt: new Date(),
-          });
-        }
-    
-        console.log("Google signed up user:", user.uid);
-        navigate("/profile");
-      } catch (error) {
-        console.error("Google signup error:", error.message);
-        setError(error.message);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      // Reference to the user's document in Firestore
+      const userRef = doc(firestoreDB, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      // Only create the document if it doesn't exist
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          displayName: user.displayName || "",
+          email: user.email,
+          photoURL: user.photoURL || "",
+          createdAt: new Date(),
+        });
       }
-    };
+
+      console.log("Google signed up user:", user.uid);
+      navigate("/profile");
+    } catch (error) {
+      console.error("Google signup error:", error.message);
+      setError(error.message);
+    }
+  };
 
   return (
     <div
