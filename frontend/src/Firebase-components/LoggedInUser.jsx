@@ -71,6 +71,9 @@ const LoggedInUser = ({ currentUser }) => {
               <Link to="/profile/edit-profile" className="btn btn-primary">
                 Edit Profile
               </Link>
+              <Link to="/profile/friends" className="btn btn-secondary">
+                Friends
+              </Link>
               <Link to="/privacy" className="btn btn-secondary">
                 Privacy
               </Link>

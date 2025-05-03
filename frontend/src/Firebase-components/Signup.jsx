@@ -34,6 +34,8 @@ function Signup({ currentUser }) {
       );
       const user = userCredential.user;
 
+      const displayName = email.split("@")[0];
+
       // Save user profile to Firestore
       await setDoc(doc(firestoreDB, "users", user.uid), {
         uid: user.uid,
@@ -41,6 +43,7 @@ function Signup({ currentUser }) {
         displayName: user.displayName || "", // Optional: add full name input
         photoURL: user.photoURL || "", // Optional: user uploads profile later
         createdAt: new Date(),
+        displayName
       });
 
       console.log("Signed up user and created profile:", user.uid);

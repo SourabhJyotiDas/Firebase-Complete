@@ -23,7 +23,9 @@ const Navbar = ({currentUser}) => {
             <li className="nav-item">
               <Link className="nav-link" to="/">Home</Link>
             </li>
-
+            <li className="nav-item">
+              <Link className="nav-link" to="/search">Search</Link>
+            </li>
             {/* Conditional rendering based on authentication status */}
             {!currentUser ? (
               <>

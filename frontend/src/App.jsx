@@ -13,6 +13,9 @@ import { useEffect, useState } from "react";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import EditProfile from "./Firebase-components/Edit-Profile";
+import Friends from "./Firebase-components/Friends";
+import MessageComponent from "./Firebase-components/MessageComponent";
+import Search from "./Firebase-components/Search";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
@@ -27,10 +30,16 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Navbar currentUser={currentUser && currentUser}/>
+        <Navbar currentUser={currentUser && currentUser} />
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login currentUser={currentUser && currentUser} />} />
+          <Route
+            path="/"
+            element={<HomePage currentUser={currentUser && currentUser} />}
+          />
+          <Route
+            path="/login"
+            element={<Login currentUser={currentUser && currentUser} />}
+          />
           <Route
             path="/signup"
             element={<Signup currentUser={currentUser && currentUser} />}
@@ -43,6 +52,15 @@ function App() {
             path="/profile/edit-profile"
             element={<EditProfile currentUser={currentUser && currentUser} />}
           />
+          <Route
+            path="/profile/friends"
+            element={<Friends currentUser={currentUser && currentUser} />}
+          />
+          <Route
+            path="/search"
+            element={<Search currentUser={currentUser} />}
+          />
+          <Route path="/messages/:friendId" element={<MessageComponent />} />
         </Routes>
       </BrowserRouter>
     </>
