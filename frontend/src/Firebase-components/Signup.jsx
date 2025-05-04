@@ -40,7 +40,6 @@ function Signup({ currentUser }) {
       await setDoc(doc(firestoreDB, "users", user.uid), {
         uid: user.uid,
         email: user.email,
-        displayName: user.displayName || "", // Optional: add full name input
         photoURL: user.photoURL || "", // Optional: user uploads profile later
         createdAt: new Date(),
         displayName
