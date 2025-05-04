@@ -8,8 +8,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { auth, firestoreDB } from "../firebase";
-import { Link } from "react-router-dom"; // <-- Import Link
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const UserLists = ({ currentUser }) => {
   const [users, setUsers] = useState([]);
@@ -19,7 +18,6 @@ const UserLists = ({ currentUser }) => {
 
   const navigate = useNavigate();
 
-  // Redirect to login if not authenticated
   useEffect(() => {
     if (!currentUser) {
       navigate("/login");
@@ -30,17 +28,15 @@ const UserLists = ({ currentUser }) => {
     const fetchUsers = async () => {
       const currentUID = currentUser.uid;
 
-      // 1. Get current user's friends
       const friendsSnap = await getDocs(
         collection(firestoreDB, "users", currentUID, "friends")
       );
       const friendMap = {};
       friendsSnap.forEach((doc) => {
-        friendMap[doc.id] = true; // friend UID
+        friendMap[doc.id] = true;
       });
       setFriends(friendMap);
 
-      // 2. Get incoming friend requests
       const incomingSnap = await getDocs(
         collection(firestoreDB, "users", currentUID, "friendRequests")
       );
@@ -50,19 +46,14 @@ const UserLists = ({ currentUser }) => {
       });
       setIncomingRequests(incomingMap);
 
-      // 3. Get all users (excluding self and friends)
       const allUsersSnap = await getDocs(collection(firestoreDB, "users"));
       const filteredUsers = [];
 
       for (const userDoc of allUsersSnap.docs) {
         const data = userDoc.data();
-        if (
-          data.uid !== currentUID &&
-          !friendMap[data.uid] // Exclude friends
-        ) {
+        if (data.uid !== currentUID && !friendMap[data.uid]) {
           filteredUsers.push({ ...data, id: userDoc.id });
 
-          // Check if I sent them a request
           const reqSnap = await getDoc(
             doc(firestoreDB, "users", data.uid, "friendRequests", currentUID)
           );
@@ -86,12 +77,9 @@ const UserLists = ({ currentUser }) => {
 
     try {
       if (isIncoming) {
-        // Accept Request
         await deleteDoc(
           doc(firestoreDB, "users", currentUID, "friendRequests", user.uid)
         );
-
-        // Add each other as friends
         await Promise.all([
           setDoc(doc(firestoreDB, "users", currentUID, "friends", user.uid), {
             uid: user.uid,
@@ -108,8 +96,6 @@ const UserLists = ({ currentUser }) => {
             timestamp: new Date(),
           }),
         ]);
-
-        // Update state
         setIncomingRequests((prev) => ({
           ...prev,
           [user.uid]: false,
@@ -118,9 +104,8 @@ const UserLists = ({ currentUser }) => {
           ...prev,
           [user.uid]: true,
         }));
-        setUsers((prev) => prev.filter((u) => u.uid !== user.uid)); // remove from list
+        setUsers((prev) => prev.filter((u) => u.uid !== user.uid));
       } else if (isSent) {
-        // Cancel Sent Request
         await deleteDoc(
           doc(firestoreDB, "users", user.uid, "friendRequests", currentUID)
         );
@@ -129,7 +114,6 @@ const UserLists = ({ currentUser }) => {
           [user.uid]: false,
         }));
       } else {
-        // Send New Request
         await setDoc(
           doc(firestoreDB, "users", user.uid, "friendRequests", currentUID),
           {
@@ -149,51 +133,61 @@ const UserLists = ({ currentUser }) => {
   };
 
   return (
-    <div className="container mt-5">
-      <ul className="list-group">
+    <div className="container mt-4">
+      <h3 className="mb-3">Discover People</h3>
+      <div
+        className="d-flex overflow-auto gap-3 py-2 px-1"
+        style={{ whiteSpace: "nowrap" }}
+      >
         {users.map((user) => {
           const isIncoming = incomingRequests[user.uid];
           const isSent = sentRequests[user.uid];
           const buttonText = isIncoming
-            ? "Accept Request"
+            ? "Accept"
             : isSent
-            ? "Cancel Request"
-            : "Send Friend Request";
+            ? "Cancel"
+            : "Add Friend";
+
+          const buttonClass = isIncoming
+            ? "btn-success"
+            : isSent
+            ? "btn-secondary"
+            : "btn-primary";
 
           return (
-            <li
+            <div
               key={user.uid}
-              className="list-group-item d-flex justify-content-between align-items-center">
-              <div className="d-flex align-items-center">
+              className="card text-center shadow-sm"
+              style={{ minWidth: "200px" }}
+            >
+              <div className="card-body">
                 <img
-                  src={user.photoURL || "https://via.placeholder.com/40"}
-                  alt="User"
-                  className="rounded-circle me-3"
-                  width="40"
-                  height="40"
+                  src={user.photoURL || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStt6mFXAUq2EJs2B9fmWG2GI-iS1gMwHAAsQ&s"}
+                  alt={user.displayName}
+                  className="rounded-circle mb-2"
+                  width="80"
+                  height="80"
+                  style={{ objectFit: "cover" }}
                 />
-                {/* Add Link to profile */}
-                <Link
-                  to={`/profile/${user.uid}`}
-                  className="text-decoration-none">
-                  <strong>{user?.displayName}</strong>
-                </Link>
+                <h6 className="card-title mb-0">
+                  <Link to={`/profile/${user.uid}`} className="text-decoration-none">
+                    {user.displayName}
+                  </Link>
+                </h6>
+                <p className="text-muted" style={{ fontSize: "0.8rem" }}>
+                  {user.email}
+                </p>
+                <button
+                  className={`btn btn-sm ${buttonClass}`}
+                  onClick={() => handleButtonClick(user)}
+                >
+                  {buttonText}
+                </button>
               </div>
-              <button
-                className={`btn ${
-                  isIncoming
-                    ? "btn-success"
-                    : isSent
-                    ? "btn-secondary"
-                    : "btn-primary"
-                }`}
-                onClick={() => handleButtonClick(user)}>
-                {buttonText}
-              </button>
-            </li>
+            </div>
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 };

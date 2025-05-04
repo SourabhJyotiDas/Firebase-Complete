@@ -7,10 +7,16 @@ const FriendsList = () => {
   const [friends, setFriends] = useState([]);
   const navigate = useNavigate();
 
+  const [currentUser, setCurrentUser] = useState(() => {
+    // Try to get the user from localStorage on first load
+    const storedUser = localStorage.getItem("currentUser");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const currentUID = auth.currentUser.uid;
+        const currentUID = currentUser.uid;
         const friendsRef = collection(firestoreDB, "users", currentUID, "friends");
         const snapshot = await getDocs(friendsRef);
         const friendsList = snapshot.docs.map((doc) => doc.data());
@@ -29,26 +35,26 @@ const FriendsList = () => {
 
   return (
     <div className="container mt-5">
-      <h3 className="text-center mb-4">Your Friends</h3>
       {friends.length === 0 ? (
         <p className="text-center text-muted">No friends yet.</p>
       ) : (
         <ul className="list-group">
           {friends.map((friend) => (
+
             <li
               key={friend.uid}
               className="list-group-item d-flex justify-content-between align-items-center"
             >
               <div className="d-flex align-items-center">
                 <img
-                  src={friend.photoURL || "https://via.placeholder.com/40"}
+                  src={friend.photoURL || "https://cdn-icons-png.flaticon.com/512/11789/11789135.png"}
                   alt="User"
                   className="rounded-circle me-3"
                   width="40"
                   height="40"
                 />
                 <Link to={`/profile/${friend.uid}`} className="text-decoration-none">
-                  <strong>{friend.displayName}</strong>
+                  <strong>{friend?.email.split("@")[0]}</strong>
                 </Link>
               </div>
               <button

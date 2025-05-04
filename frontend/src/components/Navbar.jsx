@@ -5,7 +5,7 @@ const Navbar = ({currentUser}) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container">
-        <Link className="navbar-brand" to="/">MyApp</Link>
+        <Link className="navbar-brand" to="/">LoopTalk</Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -21,10 +21,13 @@ const Navbar = ({currentUser}) => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/">Home</Link>
+              <Link className="nav-link" to="/search">Search</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/search">Search</Link>
+              <Link className="nav-link" to="/messages">Messages</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/notification">Notifications</Link>
             </li>
             {/* Conditional rendering based on authentication status */}
             {!currentUser ? (
