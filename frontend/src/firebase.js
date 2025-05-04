@@ -3,26 +3,36 @@ import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database"; // <-- Add this
 import { getAuth } from "firebase/auth"; // if you need authentication
 import { getStorage } from "firebase/storage";
-import {  GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"; // if you need database
+import {
+  REACT_APP_FIREBASE_API_KEY,
+  REACT_APP_FIREBASE_APP_ID,
+  REACT_APP_FIREBASE_AUTH_DOMAIN,
+  REACT_APP_FIREBASE_DATABASE_URL,
+  REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  REACT_APP_FIREBASE_PROJECT_ID,
+  REACT_APP_FIREBASE_STORAGE_BUCKET
+} from "../keys"
 
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAoZqwTAD3tGS7yIiQkqdhsRnh2E8GpaSE",
-  authDomain: "looptalk-project.firebaseapp.com",
-  projectId: "looptalk-project",
-  storageBucket: "looptalk-project.firebasestorage.app",
-  messagingSenderId: "905805547039",
-  appId: "1:905805547039:web:628c2c32c9ac5820e7772a",
-  databaseURL:"https://looptalk-project-default-rtdb.firebaseio.com"
+  apiKey: REACT_APP_FIREBASE_API_KEY,
+  authDomain: REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: REACT_APP_FIREBASE_APP_ID,
+  databaseURL: REACT_APP_FIREBASE_DATABASE_URL,
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 // Create a database instance
-export const realtimeDB  = getDatabase(app);  // Realtime Database
+export const realtimeDB = getDatabase(app);  // Realtime Database
 
 
 // Export Firebase services
